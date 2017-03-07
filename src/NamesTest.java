@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -37,5 +38,12 @@ public class NamesTest extends TestCase {
 		assertEquals("Name1", nameFromField);
 		String nameFromMethod = method("get").withReturnType(String.class).withParameterTypes(int.class).in(namesInstance).invoke(1);
 		assertEquals("Name2", nameFromMethod);
+		
+		List<String>newNamesToSet = new ArrayList<>();
+		newNamesToSet.add("NewNamesToSet1");
+		newNamesToSet.add("NewNamesToSet2");
+		field("namesInClass").ofType(List.class).in(namesInstance).set(newNamesToSet);
+		String nameFromFieldAfterSetNewValue = (String) field("namesInClass").ofType(List.class).in(namesInstance).get().get(0);
+		assertEquals("NewNamesToSet1", nameFromFieldAfterSetNewValue);
 	}
 }
